@@ -1,0 +1,410 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Static batching</title>
+    <link rel="icon" href="book.ico" type="image/x-icon">
+    <link href="style/style.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://stackedit.io/style.css" />
+
+    <style>
+        .stackedit__html {
+            max-width: 1200px;
+            font-size: 20px;
+        }
+    </style>
+</head>
+
+<body class="stackedit">
+
+<header>
+    <div class="navbar navbar-dark bg-dark shadow-sm">
+        <div class="container">
+
+            <a href="articles.html" class="navbar-brand d-flex align-items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width ="30" height = "20" shape-rendering="geometricPrecision" text-rendering="geometricPrecision" image-rendering="optimizeQuality" fill-rule="evenodd" clip-rule="evenodd" viewBox="150 0 400 512.87" style="fill: #ffffff;"><path fill-rule="nonzero" d="M35.7 32.95h33.54V11.18C69.24 5.01 74.25 0 80.43 0c6.17 0 11.18 5.01 11.18 11.18v21.77h49.21V11.18c0-6.17 5.01-11.18 11.19-11.18 6.17 0 11.18 5.01 11.18 11.18v21.77h49.21V11.18C212.4 5.01 217.41 0 223.59 0c6.17 0 11.18 5.01 11.18 11.18v21.77h49.21V11.18c0-6.17 5.01-11.18 11.19-11.18 6.17 0 11.18 5.01 11.18 11.18v21.77h34.55c9.83 0 18.76 4.03 25.21 10.49 5.36 5.35 9.04 12.4 10.15 20.23h.04c9.82 0 18.76 4.03 25.21 10.48C407.98 80.62 412 89.56 412 99.37v376.8c0 9.77-4.04 18.7-10.49 25.17-6.51 6.5-15.45 10.53-25.21 10.53H67.71c-9.81 0-18.75-4.02-25.22-10.49-6.14-6.14-10.09-14.53-10.45-23.8-8.36-.86-15.9-4.66-21.55-10.31C4.03 460.82 0 451.89 0 442.06V68.65c0-9.83 4.03-18.77 10.48-25.22 6.45-6.45 15.39-10.48 25.22-10.48zm340.9 51.06v358.05c0 9.8-4.03 18.74-10.49 25.2-6.47 6.47-15.41 10.5-25.21 10.5H52.43c.39 3.59 2.01 6.82 4.44 9.25 2.79 2.79 6.64 4.53 10.84 4.53H376.3c4.22 0 8.07-1.74 10.85-4.52 2.78-2.78 4.52-6.63 4.52-10.85V99.37c0-4.2-1.74-8.05-4.54-10.84a15.334 15.334 0 0 0-10.53-4.52zm-294 302.37c-5.74 0-10.4-4.86-10.4-10.85 0-5.99 4.66-10.85 10.4-10.85h214.78c5.74 0 10.41 4.86 10.41 10.85 0 5.99-4.67 10.85-10.41 10.85H82.6zm0-71.58c-5.74 0-10.4-4.86-10.4-10.85 0-5.99 4.66-10.85 10.4-10.85h214.78c5.74 0 10.41 4.86 10.41 10.85 0 5.99-4.67 10.85-10.41 10.85H82.6zm0-71.58c-5.74 0-10.4-4.86-10.4-10.85 0-5.99 4.66-10.85 10.4-10.85h214.78c5.74 0 10.41 4.86 10.41 10.85 0 5.99-4.67 10.85-10.41 10.85H82.6zm0-71.58c-5.74 0-10.4-4.86-10.4-10.85 0-5.99 4.66-10.85 10.4-10.85h214.78c5.74 0 10.41 4.86 10.41 10.85 0 5.99-4.67 10.85-10.41 10.85H82.6zM306.35 53.28v21.77c0 6.17-5.01 11.18-11.18 11.18-6.18 0-11.19-5.01-11.19-11.18V53.28h-49.21v21.77c0 6.17-5.01 11.18-11.18 11.18-6.18 0-11.19-5.01-11.19-11.18V53.28h-49.21v21.77c0 6.17-5.01 11.18-11.18 11.18-6.18 0-11.19-5.01-11.19-11.18V53.28H91.61v21.77c0 6.17-5.01 11.18-11.18 11.18-6.18 0-11.19-5.01-11.19-11.18V53.28H35.7c-4.22 0-8.07 1.75-10.85 4.52-2.77 2.78-4.52 6.63-4.52 10.85v373.41c0 4.2 1.75 8.05 4.53 10.84 2.8 2.79 6.65 4.53 10.84 4.53h305.2c4.19 0 8.03-1.75 10.83-4.54 2.79-2.8 4.54-6.65 4.54-10.83V68.65c0-4.19-1.74-8.04-4.53-10.84-2.79-2.78-6.64-4.53-10.84-4.53h-34.55z"/></svg>
+                <strong>Articles</strong>
+            </a>
+
+            <a href="https://github.com/DenDunno" class="navbar-brand d-flex align-items-center">
+                <?xml version="1.0" encoding="UTF-8"?>
+                <svg xmlns="http://www.w3.org/2000/svg" width="41px" height="40px" viewBox="0 0 40 40">
+                    <g id="surface1">
+                        <path style=" stroke:none;fill-rule:evenodd;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 19.941406 0 C 8.914062 0 0 9.167969 0 20.507812 C 0 29.570312 5.710938 37.246094 13.632812 39.960938 C 14.625 40.164062 14.988281 39.519531 14.988281 38.976562 C 14.988281 38.5 14.957031 36.871094 14.957031 35.175781 C 9.410156 36.398438 8.253906 32.730469 8.253906 32.730469 C 7.363281 30.351562 6.042969 29.742188 6.042969 29.742188 C 4.226562 28.484375 6.171875 28.484375 6.171875 28.484375 C 8.1875 28.621094 9.242188 30.589844 9.242188 30.589844 C 11.027344 33.714844 13.898438 32.832031 15.054688 32.289062 C 15.21875 30.964844 15.746094 30.046875 16.308594 29.539062 C 11.886719 29.0625 7.230469 27.296875 7.230469 19.421875 C 7.230469 17.179688 8.023438 15.347656 9.277344 13.921875 C 9.078125 13.410156 8.386719 11.304688 9.476562 8.488281 C 9.476562 8.488281 11.160156 7.945312 14.957031 10.59375 C 16.582031 10.144531 18.257812 9.914062 19.941406 9.914062 C 21.625 9.914062 23.339844 10.152344 24.925781 10.59375 C 28.722656 7.945312 30.40625 8.488281 30.40625 8.488281 C 31.496094 11.304688 30.800781 13.410156 30.605469 13.921875 C 31.890625 15.347656 32.652344 17.179688 32.652344 19.421875 C 32.652344 27.296875 27.996094 29.027344 23.539062 29.539062 C 24.265625 30.183594 24.890625 31.40625 24.890625 33.339844 C 24.890625 36.089844 24.859375 38.296875 24.859375 38.976562 C 24.859375 39.519531 25.222656 40.164062 26.214844 39.960938 C 34.136719 37.246094 39.847656 29.570312 39.847656 20.507812 C 39.878906 9.167969 30.933594 0 19.941406 0 Z M 19.941406 0 "/>
+                    </g>
+                </svg>
+            </a>
+        </div>
+    </div>
+</header>
+
+  <div class="stackedit__html"><h2 id="p-aligncenterstatic-batchingp"><p align="center">Static batching. <a href="https://github.com/DenDunno/TutorialOpenTK/tree/master/StaticBatching/Example">Source code</a></p></h2>
+<p>In 3D graphics programming, static batching is an optimization technique used to increase the performance of rendering large numbers of objects in a scene.</p>
+<p>Static batching works by combining multiple individual meshes into a single, larger mesh that can be sent to the graphics card in a single draw call.</p>
+<p>Static batching is particularly useful for scenes that have a large number of small, static objects that don’t change position, rotation, or scale during the course of the game.</p>
+<p>Suppose we want to draw a grid with 10K elements using a simple color shader. The grid consists of quads and triangles. There are only 35K vertices and 15K tris to process, which is quite an easy task for a modern GPU.</p>
+<p align="center">
+  <img src="images/static batching/bigGrid.png?raw=true" alt="grid with 10 thousands draw calls">
+</p>
+<p>However, the example runs with 25 FPS and rendering takes about 75% of the frame time. Why? Since we draw each element separately, we get 10K draw calls per frame which is the main bottleneck in this example.</p>
+<p>To improve performance, we can use static batching to combine the quads and triangles into a single VBO and render them with a single draw call.</p>
+<p align="center">
+<img src="images/static batching/million.png?raw=true" alt="3 million vertices, 1 million elements rendered with a single draw call">
+</p>
+<p>And what we see? 1 million elements, 3.5M vertices at 60 FPS!</p>
+
+<p>After you saw the magic of batching, let’s make a similar grid on your own.  First of all, we need the function that builds the grid of quads.</p>
+<pre class=" language-c"><code class="prism # language-c">public Mesh <span class="token function">Build</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    Mesh result <span class="token operator">=</span> <span class="token function">new</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> _count<span class="token punctuation">;</span> <span class="token operator">++</span>i<span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> j <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> j <span class="token operator">&lt;</span> _count<span class="token punctuation">;</span> <span class="token operator">++</span>j<span class="token punctuation">)</span>
+        <span class="token punctuation">{</span>
+            Vector2 position <span class="token operator">=</span> <span class="token function">GetPositionForQuad</span><span class="token punctuation">(</span>i<span class="token punctuation">,</span> j<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token function">AddQuad</span><span class="token punctuation">(</span>result<span class="token punctuation">,</span> position<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">return</span> result<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+private <span class="token keyword">void</span> <span class="token function">AddQuad</span><span class="token punctuation">(</span>Mesh mesh<span class="token punctuation">,</span> Vector2 position<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    mesh<span class="token punctuation">.</span>Indices<span class="token punctuation">.</span><span class="token function">AddRange</span><span class="token punctuation">(</span>new<span class="token punctuation">[</span><span class="token punctuation">]</span>
+    <span class="token punctuation">{</span>
+        <span class="token number">0</span> <span class="token operator">+</span> _indexOffset<span class="token punctuation">,</span> <span class="token number">1</span> <span class="token operator">+</span> _indexOffset<span class="token punctuation">,</span> <span class="token number">2</span> <span class="token operator">+</span> _indexOffset<span class="token punctuation">,</span>
+        <span class="token number">2</span> <span class="token operator">+</span> _indexOffset<span class="token punctuation">,</span> <span class="token number">3</span> <span class="token operator">+</span> _indexOffset<span class="token punctuation">,</span> <span class="token number">0</span> <span class="token operator">+</span> _indexOffset<span class="token punctuation">,</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    
+    mesh<span class="token punctuation">.</span>Vertices<span class="token punctuation">.</span><span class="token function">AddRange</span><span class="token punctuation">(</span>new<span class="token punctuation">[</span><span class="token punctuation">]</span>
+    <span class="token punctuation">{</span>
+        position<span class="token punctuation">.</span>X <span class="token operator">+</span> _objectSize<span class="token punctuation">,</span>   position<span class="token punctuation">.</span>Y<span class="token punctuation">,</span> 
+        position<span class="token punctuation">.</span>X <span class="token operator">+</span> _objectSize<span class="token punctuation">,</span>   position<span class="token punctuation">.</span>Y <span class="token operator">+</span> _objectSize<span class="token punctuation">,</span> 
+        position<span class="token punctuation">.</span>X<span class="token punctuation">,</span>   position<span class="token punctuation">.</span>Y <span class="token operator">+</span> _objectSize<span class="token punctuation">,</span>
+        position<span class="token punctuation">.</span>X<span class="token punctuation">,</span>   position<span class="token punctuation">.</span>Y<span class="token punctuation">,</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    _indexOffset <span class="token operator">+</span><span class="token operator">=</span> <span class="token number">4</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>In the end, we got 64 (or as many as you wish) quads rendered with a single draw call.</p>
+<p align="center">
+<img src="images/static batching/batchedQuads.png?raw=true" alt="grid of quads rendered with a single draw call">
+</p>
+<p>Great, but the main power of static batching is combining <strong>different</strong> meshes. So, a few lines of code and we will get a more interesting result.</p>
+<pre class=" language-c"><code class="prism # language-c">public Mesh <span class="token function">Build</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    Mesh result <span class="token operator">=</span> <span class="token function">new</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> _count<span class="token punctuation">;</span> <span class="token operator">++</span>i<span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> j <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> j <span class="token operator">&lt;</span> _count<span class="token punctuation">;</span> <span class="token operator">++</span>j<span class="token punctuation">)</span>
+        <span class="token punctuation">{</span>
+            Vector2 position <span class="token operator">=</span> <span class="token function">GetPositionForObject</span><span class="token punctuation">(</span>i<span class="token punctuation">,</span> j<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>i <span class="token operator">+</span> j<span class="token punctuation">)</span> <span class="token operator">%</span> <span class="token number">2</span> <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span>
+            <span class="token punctuation">{</span>
+                <span class="token function">AddQuad</span><span class="token punctuation">(</span>result<span class="token punctuation">,</span> position<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            <span class="token keyword">else</span>
+            <span class="token punctuation">{</span>
+                <span class="token function">AddTriangle</span><span class="token punctuation">(</span>result<span class="token punctuation">,</span> position<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">return</span> result<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+private <span class="token keyword">void</span> <span class="token function">AddTriangle</span><span class="token punctuation">(</span>Mesh mesh<span class="token punctuation">,</span> Vector2 position<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    mesh<span class="token punctuation">.</span>Indices<span class="token punctuation">.</span><span class="token function">AddRange</span><span class="token punctuation">(</span>new<span class="token punctuation">[</span><span class="token punctuation">]</span>
+    <span class="token punctuation">{</span>
+        <span class="token number">0</span> <span class="token operator">+</span> _indexOffset<span class="token punctuation">,</span> <span class="token number">1</span> <span class="token operator">+</span> _indexOffset<span class="token punctuation">,</span> <span class="token number">2</span> <span class="token operator">+</span> _indexOffset<span class="token punctuation">,</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    
+    mesh<span class="token punctuation">.</span>Vertices<span class="token punctuation">.</span><span class="token function">AddRange</span><span class="token punctuation">(</span>new<span class="token punctuation">[</span><span class="token punctuation">]</span>
+    <span class="token punctuation">{</span>
+        position<span class="token punctuation">.</span>X<span class="token punctuation">,</span>   position<span class="token punctuation">.</span>Y<span class="token punctuation">,</span> 
+        position<span class="token punctuation">.</span>X <span class="token operator">+</span> _objectSize<span class="token punctuation">,</span>   position<span class="token punctuation">.</span>Y<span class="token punctuation">,</span> 
+        position<span class="token punctuation">.</span>X <span class="token operator">+</span> _objectSize <span class="token operator">/</span> <span class="token number">2f</span><span class="token punctuation">,</span>   position<span class="token punctuation">.</span>Y <span class="token operator">+</span> _objectSize
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    _indexOffset <span class="token operator">+</span><span class="token operator">=</span> <span class="token number">3</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p align="center">
+<img src="images/static batching/quadTriangle.png?raw=true" alt="grid of quads and triangles rendered with a single draw call">
+</p>
+<p>Perfect, But what we can do, if we want our geometry to look differently?</p>
+<p>The answer is setting the ID for every geometry vertex and changing the color at the shader stage using that ID.</p>
+<p>Sounds a bit complicated but in reality, it isn’t at all.</p>
+<pre class=" language-c"><code class="prism # language-c">Mesh mesh <span class="token operator">=</span> <span class="token function">new</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    Vertices <span class="token operator">=</span>
+    <span class="token punctuation">{</span>
+        <span class="token comment">// position      id</span>
+        <span class="token operator">-</span><span class="token number">0.95f</span><span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">0.25f</span><span class="token punctuation">,</span>   <span class="token number">0</span><span class="token punctuation">,</span>
+        <span class="token operator">-</span><span class="token number">0.45f</span><span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">0.25f</span><span class="token punctuation">,</span>   <span class="token number">0</span><span class="token punctuation">,</span>
+        <span class="token operator">-</span><span class="token number">0.7f</span><span class="token punctuation">,</span>   <span class="token number">0.25f</span><span class="token punctuation">,</span>   <span class="token number">0</span><span class="token punctuation">,</span>
+        
+        <span class="token number">0.25f</span><span class="token punctuation">,</span>   <span class="token number">0.25f</span><span class="token punctuation">,</span>   <span class="token number">1</span><span class="token punctuation">,</span> 
+        <span class="token number">0.25f</span><span class="token punctuation">,</span>  <span class="token operator">-</span><span class="token number">0.25f</span><span class="token punctuation">,</span>   <span class="token number">1</span><span class="token punctuation">,</span>  
+        <span class="token operator">-</span><span class="token number">0.25f</span><span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">0.25f</span><span class="token punctuation">,</span>   <span class="token number">1</span><span class="token punctuation">,</span>  
+        <span class="token operator">-</span><span class="token number">0.25f</span><span class="token punctuation">,</span>  <span class="token number">0.25f</span><span class="token punctuation">,</span>   <span class="token number">1</span><span class="token punctuation">,</span>
+        
+        <span class="token number">0.45f</span><span class="token punctuation">,</span>   <span class="token number">0.25f</span><span class="token punctuation">,</span>   <span class="token number">2</span><span class="token punctuation">,</span> 
+        <span class="token number">0.95f</span><span class="token punctuation">,</span>   <span class="token number">0.25f</span><span class="token punctuation">,</span>   <span class="token number">2</span><span class="token punctuation">,</span> 
+        <span class="token number">0.7f</span><span class="token punctuation">,</span>   <span class="token operator">-</span><span class="token number">0.25f</span><span class="token punctuation">,</span>   <span class="token number">2</span><span class="token punctuation">,</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    
+    Indices <span class="token operator">=</span>
+    <span class="token punctuation">{</span>
+        <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span>
+        
+        <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">6</span><span class="token punctuation">,</span>  
+        <span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">,</span> <span class="token number">6</span><span class="token punctuation">,</span>
+        
+        <span class="token number">7</span><span class="token punctuation">,</span> <span class="token number">8</span><span class="token punctuation">,</span> <span class="token number">9</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+</code></pre>
+<p>After setting an ID to vertices we can read it in the shader.</p>
+<pre class=" language-glsl"><code class="prism  language-glsl"><span class="token comment">// Vertex shader (vert.glsl)</span>
+<span class="token preprocessor builtin">#version</span> <span class="token number">330</span> core    
+<span class="token keyword">layout</span><span class="token punctuation">(</span>location <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token keyword">in</span> <span class="token keyword">vec2</span> position<span class="token punctuation">;</span>  
+<span class="token keyword">layout</span><span class="token punctuation">(</span>location <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token keyword">in</span> <span class="token keyword">float</span> vertexId<span class="token punctuation">;</span>  
+  
+<span class="token keyword">out</span> <span class="token keyword">float</span> id<span class="token punctuation">;</span>  
+  
+<span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span>  
+<span class="token punctuation">{</span>  
+    id <span class="token operator">=</span> vertexId<span class="token punctuation">;</span>              
+    gl_Position <span class="token operator">=</span> <span class="token keyword">vec4</span><span class="token punctuation">(</span>position<span class="token punctuation">,</span> <span class="token number">0.0</span><span class="token punctuation">,</span> <span class="token number">1.0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  
+<span class="token punctuation">}</span>
+
+<span class="token comment">// Fragment shader (frag.glsl)</span>
+<span class="token preprocessor builtin">#version</span> <span class="token number">330</span> core  
+<span class="token keyword">in</span> <span class="token keyword">float</span> id<span class="token punctuation">;</span>  
+
+<span class="token keyword">out</span> <span class="token keyword">vec4</span> outputColor<span class="token punctuation">;</span>   
+  
+<span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span>  
+<span class="token punctuation">{</span>  
+    <span class="token keyword">vec4</span> result <span class="token operator">=</span> <span class="token keyword">vec4</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  
+      
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>id <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span>  
+    <span class="token punctuation">{</span>  
+        result <span class="token operator">=</span> <span class="token keyword">vec4</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  
+    <span class="token punctuation">}</span>  
+      
+    <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>id <span class="token operator">==</span> <span class="token number">1</span><span class="token punctuation">)</span>  
+    <span class="token punctuation">{</span>  
+        result <span class="token operator">=</span> <span class="token keyword">vec4</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  
+    <span class="token punctuation">}</span>  
+      
+    <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>id <span class="token operator">==</span> <span class="token number">2</span><span class="token punctuation">)</span>  
+    <span class="token punctuation">{</span>  
+        result <span class="token operator">=</span> <span class="token keyword">vec4</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  
+    <span class="token punctuation">}</span>  
+      
+    outputColor <span class="token operator">=</span> result<span class="token punctuation">;</span>         
+<span class="token punctuation">}</span>
+</code></pre>
+<p align="center">
+<img src="images/static batching/colorBatching.png?raw=true" alt="using vertex id for vertex shader to render batched geometry differently">
+</p>
+<p>Of course, there are a few other ways how to achieve the same result, but IDs are the more generic way.</p>
+<p>In our fragment shader, we used if/else statements. For this case it is OK, but we can easily replace that with array indexing.</p>
+<pre class=" language-glsl"><code class="prism  language-glsl"><span class="token preprocessor builtin">#version</span> <span class="token number">330</span> core  
+<span class="token keyword">uniform</span> <span class="token keyword">vec4</span><span class="token punctuation">[</span><span class="token number">30</span><span class="token punctuation">]</span> colors<span class="token punctuation">;</span> <span class="token comment">// 30 is like Capacity in List. It is NOT Count  </span>
+<span class="token keyword">uniform</span> <span class="token keyword">int</span> colorsCount<span class="token punctuation">;</span> <span class="token comment">// real Count  </span>
+  
+<span class="token keyword">in</span> <span class="token keyword">float</span> id<span class="token punctuation">;</span>  
+  
+<span class="token keyword">out</span> <span class="token keyword">vec4</span> outputColor<span class="token punctuation">;</span>  
+  
+<span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span>  
+<span class="token punctuation">{</span>         
+    outputColor <span class="token operator">=</span> colors<span class="token punctuation">[</span>id <span class="token operator">%</span> colorsCount<span class="token punctuation">]</span><span class="token punctuation">;</span>         
+<span class="token punctuation">}</span>
+</code></pre>
+<p>And setting that uniforms in C#:</p>
+<pre class=" language-c"><code class="prism # language-c"><span class="token keyword">int</span> program <span class="token operator">=</span> ShaderProgram<span class="token punctuation">.</span><span class="token function">Create</span><span class="token punctuation">(</span><span class="token string">"vert.glsl"</span><span class="token punctuation">,</span> <span class="token string">"frag.glsl"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">int</span> countIndex <span class="token operator">=</span> GL<span class="token punctuation">.</span><span class="token function">GetUniformLocation</span><span class="token punctuation">(</span>program<span class="token punctuation">,</span> <span class="token string">"colorsCount"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">int</span> colorsIndex <span class="token operator">=</span> GL<span class="token punctuation">.</span><span class="token function">GetUniformLocation</span><span class="token punctuation">(</span>program<span class="token punctuation">,</span> <span class="token string">"colors"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+GL<span class="token punctuation">.</span><span class="token function">UseProgram</span><span class="token punctuation">(</span>program<span class="token punctuation">)</span><span class="token punctuation">;</span>
+GL<span class="token punctuation">.</span><span class="token function">Uniform1</span><span class="token punctuation">(</span>countIndex<span class="token punctuation">,</span> <span class="token number">6</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  
+GL<span class="token punctuation">.</span><span class="token function">Uniform4</span><span class="token punctuation">(</span>colorsIndex<span class="token punctuation">,</span> <span class="token number">6</span><span class="token punctuation">,</span> new <span class="token keyword">float</span><span class="token punctuation">[</span><span class="token punctuation">]</span>  
+<span class="token punctuation">{</span>  
+  <span class="token number">255</span><span class="token punctuation">,</span> <span class="token number">255</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">255</span><span class="token punctuation">,</span> <span class="token comment">// yellow  </span>
+  <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">255</span><span class="token punctuation">,</span> <span class="token number">255</span><span class="token punctuation">,</span> <span class="token number">255</span><span class="token punctuation">,</span> <span class="token comment">// cyan  </span>
+  <span class="token number">255</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">255</span><span class="token punctuation">,</span> <span class="token number">255</span><span class="token punctuation">,</span> <span class="token comment">// purple  </span>
+  <span class="token number">255</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">255</span><span class="token punctuation">,</span> <span class="token comment">// red  </span>
+  <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">255</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">255</span><span class="token punctuation">,</span> <span class="token comment">// green  </span>
+  <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">255</span><span class="token punctuation">,</span> <span class="token number">255</span><span class="token punctuation">,</span> <span class="token comment">// blue  </span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<p align="center">
+<img src="images/static batching/uniform_array.png?raw=true" alt="rewriting fragment shader with uniform color array and vertex id">
+</p>
+<p>Cleaner shader code and much more control over shader from host code: killing two birds with one stone.</p>
+<p>Let’s add IDs to the grid generation and see the result.</p>
+<pre class=" language-c"><code class="prism # language-c"><span class="token comment">// Quad</span>
+mesh<span class="token punctuation">.</span>Vertices<span class="token punctuation">.</span><span class="token function">AddRange</span><span class="token punctuation">(</span>new<span class="token punctuation">[</span><span class="token punctuation">]</span>
+<span class="token punctuation">{</span>
+    position<span class="token punctuation">.</span>X <span class="token operator">+</span> _objectSize<span class="token punctuation">,</span>   position<span class="token punctuation">.</span>Y<span class="token punctuation">,</span> _id<span class="token punctuation">,</span> 
+    position<span class="token punctuation">.</span>X <span class="token operator">+</span> _objectSize<span class="token punctuation">,</span>   position<span class="token punctuation">.</span>Y <span class="token operator">+</span> _objectSize<span class="token punctuation">,</span> _id<span class="token punctuation">,</span> 
+    position<span class="token punctuation">.</span>X<span class="token punctuation">,</span>   position<span class="token punctuation">.</span>Y <span class="token operator">+</span> _objectSize<span class="token punctuation">,</span> _id<span class="token punctuation">,</span>
+    position<span class="token punctuation">.</span>X<span class="token punctuation">,</span>   position<span class="token punctuation">.</span>Y<span class="token punctuation">,</span> _id<span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// Triangle</span>
+mesh<span class="token punctuation">.</span>Vertices<span class="token punctuation">.</span><span class="token function">AddRange</span><span class="token punctuation">(</span>new<span class="token punctuation">[</span><span class="token punctuation">]</span>
+<span class="token punctuation">{</span>
+    position<span class="token punctuation">.</span>X<span class="token punctuation">,</span>   position<span class="token punctuation">.</span>Y<span class="token punctuation">,</span> _id<span class="token punctuation">,</span>
+    position<span class="token punctuation">.</span>X <span class="token operator">+</span> _objectSize<span class="token punctuation">,</span>   position<span class="token punctuation">.</span>Y<span class="token punctuation">,</span> _id<span class="token punctuation">,</span> 
+    position<span class="token punctuation">.</span>X <span class="token operator">+</span> _objectSize <span class="token operator">/</span> <span class="token number">2f</span><span class="token punctuation">,</span>   position<span class="token punctuation">.</span>Y <span class="token operator">+</span> _objectSize<span class="token punctuation">,</span> _id
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<p align="center">
+<img src="images/static batching/coloredGrid.png?raw=true" alt="grid of triangles and quads with each color rendered with a single draw call">
+</p>
+<p>As I said before, IDs are the generic way to change the appearance in a batched mesh.</p>
+<p>In the same way, you can set texture from a texture array or use some custom render function.</p>
+<h2 id="p-aligncenterstatic-batching-with-matrix-instancingp"><p align="center">Static batching with matrix instancing. <a href="https://github.com/DenDunno/TutorialOpenTK/tree/master/StaticBatchingnIstancedMatrices/Example">Source code</a></p></h2>
+<p>With this approach, we can go even further and make out geometry move. For this purpose, we need slightly change our mesh generation.</p>
+<p>In the previous section, we build a single VBO, containing small quads and triangle VBOs and render them with a single draw call.</p>
+<p>Let’s have a look at that VBO.</p>
+<p align="center">
+<img src="images/static batching/quads.png?raw=true" alt="geometry with instanced model matrices">
+</p>
+<pre class=" language-c"><code class="prism # language-c"><span class="token keyword">float</span><span class="token punctuation">[</span><span class="token punctuation">]</span> vbo <span class="token operator">=</span> 
+<span class="token punctuation">{</span>
+ <span class="token comment">// position   id</span>
+     <span class="token number">0</span><span class="token punctuation">,</span>   <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">,</span>   <span class="token number">0</span><span class="token punctuation">,</span>
+     <span class="token number">0</span><span class="token punctuation">,</span>    <span class="token number">0</span><span class="token punctuation">,</span>   <span class="token number">0</span><span class="token punctuation">,</span> 
+    <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">,</span>    <span class="token number">0</span><span class="token punctuation">,</span>   <span class="token number">0</span><span class="token punctuation">,</span>
+    <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">,</span>   <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">,</span>   <span class="token number">0</span><span class="token punctuation">,</span> 
+
+    <span class="token number">0</span><span class="token punctuation">,</span>    <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">,</span>   <span class="token number">1</span><span class="token punctuation">,</span>
+    <span class="token number">1</span><span class="token punctuation">,</span>    <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">,</span>   <span class="token number">1</span><span class="token punctuation">,</span>
+    <span class="token number">0.5f</span><span class="token punctuation">,</span>  <span class="token number">0</span><span class="token punctuation">,</span>   <span class="token number">1</span><span class="token punctuation">,</span> 
+
+    <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">,</span>    <span class="token number">0</span><span class="token punctuation">,</span>   <span class="token number">2</span><span class="token punctuation">,</span> 
+    <span class="token number">0</span><span class="token punctuation">,</span>     <span class="token number">0</span><span class="token punctuation">,</span>   <span class="token number">2</span><span class="token punctuation">,</span> 
+    <span class="token operator">-</span><span class="token number">0.5f</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span>   <span class="token number">2</span><span class="token punctuation">,</span> 
+
+    <span class="token number">1</span><span class="token punctuation">,</span>     <span class="token number">0</span><span class="token punctuation">,</span>   <span class="token number">3</span><span class="token punctuation">,</span> 
+    <span class="token number">1</span><span class="token punctuation">,</span>     <span class="token number">1</span><span class="token punctuation">,</span>   <span class="token number">3</span><span class="token punctuation">,</span> 
+    <span class="token number">0</span><span class="token punctuation">,</span>     <span class="token number">1</span><span class="token punctuation">,</span>   <span class="token number">3</span><span class="token punctuation">,</span> 
+    <span class="token number">0</span><span class="token punctuation">,</span>     <span class="token number">0</span><span class="token punctuation">,</span>   <span class="token number">3</span><span class="token punctuation">,</span> 
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+</code></pre>
+<p>And this works for fine. But if we want to change geometry orientation, we should center each vbo part and add the modelMatrix array to the vertex shader.</p>
+<pre class=" language-c"><code class="prism # language-c"><span class="token keyword">float</span><span class="token punctuation">[</span><span class="token punctuation">]</span> vbo <span class="token operator">=</span> 
+<span class="token punctuation">{</span>
+   <span class="token comment">// position       id</span>
+    <span class="token number">0.5f</span><span class="token punctuation">,</span>    <span class="token number">0.5f</span><span class="token punctuation">,</span>   <span class="token number">0</span><span class="token punctuation">,</span> 
+    <span class="token number">0.5f</span><span class="token punctuation">,</span>   <span class="token operator">-</span><span class="token number">0.5f</span><span class="token punctuation">,</span>   <span class="token number">0</span><span class="token punctuation">,</span> 
+    <span class="token operator">-</span><span class="token number">0.5f</span><span class="token punctuation">,</span>  <span class="token operator">-</span><span class="token number">0.5f</span><span class="token punctuation">,</span>   <span class="token number">0</span><span class="token punctuation">,</span> 
+    <span class="token operator">-</span><span class="token number">0.5f</span><span class="token punctuation">,</span>   <span class="token number">0.5f</span><span class="token punctuation">,</span>   <span class="token number">0</span><span class="token punctuation">,</span>
+    
+    <span class="token number">0.5f</span><span class="token punctuation">,</span>   <span class="token operator">-</span><span class="token number">0.5f</span><span class="token punctuation">,</span>   <span class="token number">1</span><span class="token punctuation">,</span> 
+    <span class="token operator">-</span><span class="token number">0.5f</span><span class="token punctuation">,</span>  <span class="token operator">-</span><span class="token number">0.5f</span><span class="token punctuation">,</span>   <span class="token number">1</span><span class="token punctuation">,</span> 
+    <span class="token number">0</span><span class="token punctuation">,</span>       <span class="token number">0.5f</span><span class="token punctuation">,</span>   <span class="token number">1</span><span class="token punctuation">,</span>
+    
+    <span class="token number">0.5f</span><span class="token punctuation">,</span>   <span class="token operator">-</span><span class="token number">0.5f</span><span class="token punctuation">,</span>   <span class="token number">2</span><span class="token punctuation">,</span> 
+    <span class="token operator">-</span><span class="token number">0.5f</span><span class="token punctuation">,</span>  <span class="token operator">-</span><span class="token number">0.5f</span><span class="token punctuation">,</span>   <span class="token number">2</span><span class="token punctuation">,</span> 
+    <span class="token number">0</span><span class="token punctuation">,</span>       <span class="token number">0.5f</span><span class="token punctuation">,</span>   <span class="token number">2</span><span class="token punctuation">,</span>
+    
+    <span class="token number">0.5f</span><span class="token punctuation">,</span>    <span class="token number">0.5f</span><span class="token punctuation">,</span>   <span class="token number">3</span><span class="token punctuation">,</span> 
+    <span class="token number">0.5f</span><span class="token punctuation">,</span>   <span class="token operator">-</span><span class="token number">0.5f</span><span class="token punctuation">,</span>   <span class="token number">3</span><span class="token punctuation">,</span> 
+    <span class="token operator">-</span><span class="token number">0.5f</span><span class="token punctuation">,</span>  <span class="token operator">-</span><span class="token number">0.5f</span><span class="token punctuation">,</span>   <span class="token number">3</span><span class="token punctuation">,</span> 
+    <span class="token operator">-</span><span class="token number">0.5f</span><span class="token punctuation">,</span>   <span class="token number">0.5f</span><span class="token punctuation">,</span>   <span class="token number">3</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+</code></pre>
+<p>Now our geometry is centered.</p>
+<pre class=" language-glsl"><code class="prism  language-glsl"><span class="token preprocessor builtin">#version</span> <span class="token number">330</span> core  
+<span class="token keyword">uniform</span> <span class="token keyword">mat4</span><span class="token punctuation">[</span><span class="token number">200</span><span class="token punctuation">]</span> modelMatrices<span class="token punctuation">;</span>  
+  
+<span class="token keyword">layout</span><span class="token punctuation">(</span>location <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token keyword">in</span> <span class="token keyword">vec2</span> position<span class="token punctuation">;</span>  
+<span class="token keyword">layout</span><span class="token punctuation">(</span>location <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token keyword">in</span> <span class="token keyword">float</span> vertexId<span class="token punctuation">;</span>  
+  
+<span class="token keyword">out</span> <span class="token keyword">float</span> id<span class="token punctuation">;</span>  
+  
+<span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span>  
+<span class="token punctuation">{</span>  
+    id <span class="token operator">=</span> vertexId<span class="token punctuation">;</span>          
+    gl_Position <span class="token operator">=</span> <span class="token keyword">vec4</span><span class="token punctuation">(</span>position<span class="token punctuation">,</span> <span class="token number">0.0</span><span class="token punctuation">,</span> <span class="token number">1.0</span><span class="token punctuation">)</span> <span class="token operator">*</span> modelMatrices<span class="token punctuation">[</span><span class="token keyword">int</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">;</span>  
+<span class="token punctuation">}</span>
+</code></pre>
+<p>Vertex shader with instanced matrices</p>
+<pre class=" language-c"><code class="prism # language-c">private <span class="token keyword">void</span> <span class="token function">SendDataToShader</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> _transforms<span class="token punctuation">.</span>Length<span class="token punctuation">;</span> <span class="token operator">++</span>i<span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> j <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> j <span class="token operator">&lt;</span> <span class="token number">4</span><span class="token punctuation">;</span> <span class="token operator">++</span>j<span class="token punctuation">)</span>
+        <span class="token punctuation">{</span>
+            <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> k <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> k <span class="token operator">&lt;</span> <span class="token number">4</span><span class="token punctuation">;</span> <span class="token operator">++</span>k<span class="token punctuation">)</span>
+            <span class="token punctuation">{</span>
+                Matrix4 modelMatrix <span class="token operator">=</span> _transforms<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span>ModelMatrix<span class="token punctuation">;</span>
+                _rawModelMatrices<span class="token punctuation">[</span>i <span class="token operator">*</span> <span class="token number">16</span> <span class="token operator">+</span> j <span class="token operator">*</span> <span class="token number">4</span> <span class="token operator">+</span> k<span class="token punctuation">]</span> <span class="token operator">=</span> modelMatrix<span class="token punctuation">[</span>j<span class="token punctuation">,</span> k<span class="token punctuation">]</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+    
+    <span class="token keyword">int</span> location <span class="token operator">=</span> GL<span class="token punctuation">.</span><span class="token function">GetUniformLocation</span><span class="token punctuation">(</span>_shaderProgramId<span class="token punctuation">,</span> <span class="token string">"modelMatrices"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    GL<span class="token punctuation">.</span><span class="token function">ProgramUniformMatrix4</span><span class="token punctuation">(</span>_shaderProgramId<span class="token punctuation">,</span> location<span class="token punctuation">,</span> _rawModelMatrices<span class="token punctuation">.</span>Length <span class="token operator">/</span> <span class="token number">16</span><span class="token punctuation">,</span> true<span class="token punctuation">,</span> _rawModelMatrices<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>And if we set modelMatrices to identity and launch an example we will see a single figure.</p>
+<p align="center">
+<img src="images/static batching/quad.png?raw=true" alt="">
+</p>
+<p>This is because the square covers all other objects, cause each of them is aligned to the center. The fix this, we should add an offset to model matrices.</p>
+<pre class=" language-c"><code class="prism # language-c">modelMatrices<span class="token punctuation">[</span>i <span class="token operator">*</span> count <span class="token operator">+</span> j<span class="token punctuation">]</span> <span class="token operator">=</span> new <span class="token function">Transform</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    Position <span class="token operator">=</span> new <span class="token function">Vector3</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        X <span class="token operator">=</span> <span class="token operator">-</span><span class="token number">1</span> <span class="token operator">+</span> j <span class="token operator">*</span> <span class="token punctuation">(</span>objectSize <span class="token operator">*</span> <span class="token number">2</span> <span class="token operator">+</span> offset<span class="token punctuation">)</span> <span class="token operator">+</span> objectSize <span class="token operator">+</span> offset <span class="token operator">/</span> <span class="token number">2</span><span class="token punctuation">,</span>
+        Y <span class="token operator">=</span> <span class="token operator">-</span><span class="token number">1</span> <span class="token operator">+</span> i <span class="token operator">*</span> <span class="token punctuation">(</span>objectSize <span class="token operator">*</span> <span class="token number">2</span> <span class="token operator">+</span> offset<span class="token punctuation">)</span> <span class="token operator">+</span> objectSize <span class="token operator">+</span> offset <span class="token operator">/</span> <span class="token number">2</span><span class="token punctuation">,</span>
+        Z <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">,</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+</code></pre>
+<p align="center">
+<img src="images/static batching/quads.png?raw=true" alt="geometry with instanced model matrices.">
+</p>
+<p>Voila, we fixed it. And the reason we did those manipulations with matrices is that we can now manipulate objects as if they were separate.</p>
+<p>Let’s add some simple animation to the grid as a cherry on the cake.</p>
+<pre class=" language-c"><code class="prism # language-c">private <span class="token keyword">void</span> <span class="token function">UpdateMatrices</span><span class="token punctuation">(</span><span class="token keyword">float</span> deltaTime<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    _time <span class="token operator">+</span><span class="token operator">=</span> deltaTime<span class="token punctuation">;</span>
+    <span class="token keyword">float</span> lerp <span class="token operator">=</span> Algorithms<span class="token punctuation">.</span><span class="token function">ScaledSin</span><span class="token punctuation">(</span>_time <span class="token operator">*</span> <span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> _transforms<span class="token punctuation">.</span>Length<span class="token punctuation">;</span> <span class="token operator">++</span>i<span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        Vector3 eulerAngles <span class="token operator">=</span> Vector3<span class="token punctuation">.</span><span class="token function">Lerp</span><span class="token punctuation">(</span>Vector3<span class="token punctuation">.</span>Zero<span class="token punctuation">,</span> Vector3<span class="token punctuation">.</span>UnitZ <span class="token operator">*</span> _animationData<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span>TargetAngle<span class="token punctuation">,</span> lerp<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        
+        _transforms<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span>Rotation <span class="token operator">=</span> Quaternion<span class="token punctuation">.</span><span class="token function">FromEulerAngles</span><span class="token punctuation">(</span>eulerAngles<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        _transforms<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span>Position <span class="token operator">=</span> Vector3<span class="token punctuation">.</span><span class="token function">Lerp</span><span class="token punctuation">(</span>_animationData<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span>StartPosition<span class="token punctuation">,</span> _animationData<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span>TargetPosition<span class="token punctuation">,</span> lerp<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        _transforms<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span>Scale <span class="token operator">=</span> Algorithms<span class="token punctuation">.</span><span class="token function">Lerp</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> _animationData<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span>TargetScale<span class="token punctuation">,</span> lerp<span class="token punctuation">)</span> <span class="token operator">*</span> Vector3<span class="token punctuation">.</span>One<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p align="center">
+<img src="images/static batching/animatedGrid.gif?raw=true" alt="final result. Animated grid with a different geometry and colors rendered with a single draw call">
+</p>
+<p>And now we’ve got a pretty animated grid with a single draw call.</p>
+</div>
+</body>
+
+</html>
