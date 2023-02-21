@@ -4,11 +4,18 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="484cbf1c-f91b-4dae-b685-fdf6bccd6be8" name="Changes" comment="" />
+    <list default="true" id="484cbf1c-f91b-4dae-b685-fdf6bccd6be8" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/articles.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static batching.html" beforeDir="false" afterPath="$PROJECT_DIR$/static batching.html" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/static batching.html" root0="FORCE_HIGHLIGHTING" />
@@ -43,7 +50,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1676974968958</updated>
-      <workItem from="1676974970639" duration="15055000" />
+      <workItem from="1676974970639" duration="15687000" />
     </task>
     <servers />
   </component>
