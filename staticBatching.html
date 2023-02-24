@@ -46,12 +46,12 @@
 <p>Static batching is particularly useful for scenes that have a large number of small, static objects that don’t change position, rotation, or scale during the course of the game.</p>
 <p>Suppose we want to draw a grid with 10K elements using a simple color shader. The grid consists of quads and triangles. There are only 35K vertices and 15K tris to process, which is quite an easy task for a modern GPU.</p>
 <p align="center">
-  <img src="images/static batching/bigGrid.png?raw=true" alt="grid with 10 thousands draw calls">
+  <img src="images/staticBatching/bigGrid.png?raw=true" alt="grid with 10 thousands draw calls">
 </p>
 <p>However, the example runs with 25 FPS and rendering takes about 75% of the frame time. Why? Since we draw each element separately, we get 10K draw calls per frame which is the main bottleneck in this example.</p>
 <p>To improve performance, we can use static batching to combine the quads and triangles into a single VBO and render them with a single draw call.</p>
 <p align="center">
-<img src="images/static batching/million.png?raw=true" alt="3 million vertices, 1 million elements rendered with a single draw call">
+<img src="images/staticBatching/million.png?raw=true" alt="3 million vertices, 1 million elements rendered with a single draw call">
 </p>
 <p>And what we see? 1 million elements, 3.5M vertices at 60 FPS!</p>
 
@@ -94,7 +94,7 @@ private <span class="token keyword">void</span> <span class="token function">Add
 </code></pre>
 <p>In the end, we got 64 (or as many as you wish) quads rendered with a single draw call.</p>
 <p align="center">
-<img src="images/static batching/batchedQuads.png?raw=true" alt="grid of quads rendered with a single draw call">
+<img src="images/staticBatching/batchedQuads.png?raw=true" alt="grid of quads rendered with a single draw call">
 </p>
 <p>Great, but the main power of static batching is combining <strong>different</strong> meshes. So, a few lines of code and we will get a more interesting result.</p>
 <pre class=" language-c"><code class="prism # language-c">public Mesh <span class="token function">Build</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
@@ -139,7 +139,7 @@ private <span class="token keyword">void</span> <span class="token function">Add
 <span class="token punctuation">}</span>
 </code></pre>
 <p align="center">
-<img src="images/static batching/quadTriangle.png?raw=true" alt="grid of quads and triangles rendered with a single draw call">
+<img src="images/staticBatching/quadTriangle.png?raw=true" alt="grid of quads and triangles rendered with a single draw call">
 </p>
 <p>Perfect, But what we can do, if we want our geometry to look differently?</p>
 <p>The answer is setting the ID for every geometry vertex and changing the color at the shader stage using that ID.</p>
@@ -217,7 +217,7 @@ private <span class="token keyword">void</span> <span class="token function">Add
 <span class="token punctuation">}</span>
 </code></pre>
 <p align="center">
-<img src="images/static batching/colorBatching.png?raw=true" alt="using vertex id for vertex shader to render batched geometry differently">
+<img src="images/staticBatching/colorBatching.png?raw=true" alt="using vertex id for vertex shader to render batched geometry differently">
 </p>
 <p>Of course, there are a few other ways how to achieve the same result, but IDs are the more generic way.</p>
 <p>In our fragment shader, we used if/else statements. For this case it is OK, but we can easily replace that with array indexing.</p>
@@ -253,7 +253,7 @@ GL<span class="token punctuation">.</span><span class="token function">Uniform4<
 <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 </code></pre>
 <p align="center">
-<img src="images/static batching/uniform_array.png?raw=true" alt="rewriting fragment shader with uniform color array and vertex id">
+<img src="images/staticBatching/uniform_array.png?raw=true" alt="rewriting fragment shader with uniform color array and vertex id">
 </p>
 <p>Cleaner shader code and much more control over shader from host code: killing two birds with one stone.</p>
 <p>Let’s add IDs to the grid generation and see the result.</p>
@@ -275,7 +275,7 @@ mesh<span class="token punctuation">.</span>Vertices<span class="token punctuati
 <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 </code></pre>
 <p align="center">
-<img src="images/static batching/coloredGrid.png?raw=true" alt="grid of triangles and quads with each color rendered with a single draw call">
+<img src="images/staticBatching/coloredGrid.png?raw=true" alt="grid of triangles and quads with each color rendered with a single draw call">
 </p>
 <p>As I said before, IDs are the generic way to change the appearance in a batched mesh.</p>
 <p>In the same way, you can set texture from a texture array or use some custom render function.</p>
@@ -284,7 +284,7 @@ mesh<span class="token punctuation">.</span>Vertices<span class="token punctuati
 <p>In the previous section, we build a single VBO, containing small quads and triangle VBOs and render them with a single draw call.</p>
 <p>Let’s have a look at that VBO.</p>
 <p align="center">
-<img src="images/static batching/quads.png?raw=true" alt="geometry with instanced model matrices">
+<img src="images/staticBatching/quads.png?raw=true" alt="geometry with instanced model matrices">
 </p>
 <pre class=" language-c"><code class="prism # language-c"><span class="token keyword">float</span><span class="token punctuation">[</span><span class="token punctuation">]</span> vbo <span class="token operator">=</span> 
 <span class="token punctuation">{</span>
@@ -367,7 +367,7 @@ mesh<span class="token punctuation">.</span>Vertices<span class="token punctuati
 </code></pre>
 <p>And if we set modelMatrices to identity and launch an example we will see a single figure.</p>
 <p align="center">
-<img src="images/static batching/quad.png?raw=true" alt="">
+<img src="images/staticBatching/quad.png?raw=true" alt="">
 </p>
 <p>This is because the square covers all other objects, cause each of them is aligned to the center. The fix this, we should add an offset to model matrices.</p>
 <pre class=" language-c"><code class="prism # language-c">modelMatrices<span class="token punctuation">[</span>i <span class="token operator">*</span> count <span class="token operator">+</span> j<span class="token punctuation">]</span> <span class="token operator">=</span> new <span class="token function">Transform</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
@@ -381,7 +381,7 @@ mesh<span class="token punctuation">.</span>Vertices<span class="token punctuati
 <span class="token punctuation">}</span><span class="token punctuation">;</span>
 </code></pre>
 <p align="center">
-<img src="images/static batching/quads.png?raw=true" alt="geometry with instanced model matrices.">
+<img src="images/staticBatching/quads.png?raw=true" alt="geometry with instanced model matrices.">
 </p>
 <p>Voila, we fixed it. And the reason we did those manipulations with matrices is that we can now manipulate objects as if they were separate.</p>
 <p>Let’s add some simple animation to the grid as a cherry on the cake.</p>
@@ -401,7 +401,7 @@ mesh<span class="token punctuation">.</span>Vertices<span class="token punctuati
 <span class="token punctuation">}</span>
 </code></pre>
 <p align="center">
-<img src="images/static batching/animatedGrid.gif?raw=true" alt="final result. Animated grid with a different geometry and colors rendered with a single draw call">
+<img src="images/staticBatching/animatedGrid.gif?raw=true" alt="final result. Animated grid with a different geometry and colors rendered with a single draw call">
 </p>
 <p>And now we’ve got a pretty animated grid with a single draw call.</p>
 </div>
