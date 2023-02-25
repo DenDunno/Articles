@@ -6,20 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="484cbf1c-f91b-4dae-b685-fdf6bccd6be8" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/static batching/2DrawCalls.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/static batching/animatedGrid.gif" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/static batching/batchedQuads.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/static batching/bigGrid.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/static batching/colorBatching.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/static batching/coloredGrid.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/static batching/kettle_comparison.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/static batching/million.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/static batching/quad.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/static batching/quadTriangle.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/static batching/quads.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/static batching/uniform_array.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/dynamicBatching/dynamicBatching.gif" beforeDir="false" afterPath="$PROJECT_DIR$/images/dynamicBatching/dynamicBatching.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/staticBatching/animatedGrid.gif" beforeDir="false" afterPath="$PROJECT_DIR$/images/staticBatching/animatedGrid.gif" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static batching.html" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -60,7 +49,7 @@
       <option name="presentableId" value="Default" />
       <updated>1676974968958</updated>
       <workItem from="1676974970639" duration="15687000" />
-      <workItem from="1677167151140" duration="6871000" />
+      <workItem from="1677167151140" duration="10657000" />
     </task>
     <servers />
   </component>
