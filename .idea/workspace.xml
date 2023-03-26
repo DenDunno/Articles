@@ -5,10 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="484cbf1c-f91b-4dae-b685-fdf6bccd6be8" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/dynamicBatching/dynamicBatching.gif" beforeDir="false" afterPath="$PROJECT_DIR$/images/dynamicBatching/dynamicBatching.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/staticBatching/animatedGrid.gif" beforeDir="false" afterPath="$PROJECT_DIR$/images/staticBatching/animatedGrid.gif" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/particleSystem.html" beforeDir="false" afterPath="$PROJECT_DIR$/particleSystem.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
